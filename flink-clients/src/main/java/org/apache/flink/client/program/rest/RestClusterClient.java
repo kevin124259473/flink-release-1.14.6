@@ -451,27 +451,18 @@ public class RestClusterClient<T> implements ClusterClient<T> {
             final boolean advanceToEndOfTime,
             @Nullable final String savepointDirectory) {
 
-        final StopWithSavepointTriggerHeaders stopWithSavepointTriggerHeaders =
-                StopWithSavepointTriggerHeaders.getInstance();
+        final StopWithSavepointTriggerHeaders stopWithSavepointTriggerHeaders = StopWithSavepointTriggerHeaders.getInstance();
 
-        final SavepointTriggerMessageParameters stopWithSavepointTriggerMessageParameters =
-                stopWithSavepointTriggerHeaders.getUnresolvedMessageParameters();
+        final SavepointTriggerMessageParameters stopWithSavepointTriggerMessageParameters = stopWithSavepointTriggerHeaders.getUnresolvedMessageParameters();
         stopWithSavepointTriggerMessageParameters.jobID.resolve(jobId);
 
-        final CompletableFuture<TriggerResponse> responseFuture =
-                sendRequest(
-                        stopWithSavepointTriggerHeaders,
-                        stopWithSavepointTriggerMessageParameters,
-                        new StopWithSavepointRequestBody(savepointDirectory, advanceToEndOfTime));
+        final CompletableFuture<TriggerResponse> responseFuture = sendRequest(stopWithSavepointTriggerHeaders, stopWithSavepointTriggerMessageParameters, new StopWithSavepointRequestBody(savepointDirectory, advanceToEndOfTime));
 
-        return responseFuture
-                .thenCompose(
-                        savepointTriggerResponseBody -> {
+        return responseFuture.thenCompose(savepointTriggerResponseBody -> {
                             final TriggerId savepointTriggerId =
                                     savepointTriggerResponseBody.getTriggerId();
                             return pollSavepointAsync(jobId, savepointTriggerId);
-                        })
-                .thenApply(
+                        }).thenApply(
                         savepointInfo -> {
                             if (savepointInfo.getFailureCause() != null) {
                                 throw new CompletionException(savepointInfo.getFailureCause());
