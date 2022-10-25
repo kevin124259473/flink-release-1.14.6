@@ -1027,10 +1027,7 @@ public class CliFrontend {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Parses the command line arguments and starts the requested action.
-     *
-     * @param args command line arguments of the client.
-     * @return The return code of the program
+    解析命令行参数,并进行执行,此方法为核心方法
      */
     public int parseAndRun(String[] args) {
 
@@ -1050,22 +1047,26 @@ public class CliFrontend {
         try {
             // do action
             switch (action) {
+                /**** run 指令 *******/
                 case ACTION_RUN:
                     run(params);
                     return 0;
                 case ACTION_RUN_APPLICATION:
                     runApplication(params);
                     return 0;
+                /**** -list 指令 *******/
                 case ACTION_LIST:
                     list(params);
                     return 0;
                 case ACTION_INFO:
                     info(params);
                     return 0;
+                /**** -cancel 指令 *******/
                 case ACTION_CANCEL:
                     cancel(params);
                     return 0;
                 case ACTION_STOP:
+                    /**** -stop指令 指令 *******/
                     stop(params);
                     return 0;
                 case ACTION_SAVEPOINT:
@@ -1113,10 +1114,10 @@ public class CliFrontend {
     public static void main(final String[] args) {
         EnvironmentInformation.logEnvironmentInfo(LOG, "Command Line Client", args);
 
-        // 1. find the configuration directory
+        // 1. 获取配置文件路径
         final String configurationDirectory = getConfigurationDirectoryFromEnv();
 
-        // 2. load the global configuration
+        // 2. 将所有的配置转换为配置文件
         final Configuration configuration =
                 GlobalConfiguration.loadConfiguration(configurationDirectory);
 

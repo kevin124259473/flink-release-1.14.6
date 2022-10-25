@@ -132,6 +132,7 @@ public final class GlobalConfiguration {
                             + ") does not exist.");
         }
 
+        /***yaml文件转成配置信息**/
         Configuration configuration = loadYAMLResource(yamlConfigFile);
 
         if (dynamicProperties != null) {
