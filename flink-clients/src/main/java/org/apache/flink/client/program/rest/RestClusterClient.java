@@ -450,7 +450,7 @@ public class RestClusterClient<T> implements ClusterClient<T> {
             final JobID jobId,
             final boolean advanceToEndOfTime,
             @Nullable final String savepointDirectory) {
-
+        LOG.info("发送 stopWithSavepoint 请求,jobId:{},savepointDirectory:{}",jobId,savepointDirectory);
         final StopWithSavepointTriggerHeaders stopWithSavepointTriggerHeaders = StopWithSavepointTriggerHeaders.getInstance();
 
         final SavepointTriggerMessageParameters stopWithSavepointTriggerMessageParameters = stopWithSavepointTriggerHeaders.getUnresolvedMessageParameters();
