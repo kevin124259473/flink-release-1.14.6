@@ -566,23 +566,20 @@ public class CliFrontend {
                         + "\" with a savepoint.");
 
         final CustomCommandLine activeCommandLine = validateAndGetActiveCommandLine(commandLine);
-        runClusterAction(
-                activeCommandLine,
-                commandLine,
-                clusterClient -> {
-                    final String savepointPath;
-                    try {
-                        savepointPath =
-                                clusterClient
-                                        .stopWithSavepoint(
-                                                jobId, advanceToEndOfEventTime, targetDirectory)
-                                        .get(clientTimeout.toMillis(), TimeUnit.MILLISECONDS);
-                    } catch (Exception e) {
-                        throw new FlinkException(
-                                "Could not stop with a savepoint job \"" + jobId + "\".", e);
-                    }
-                    logAndSysout("Savepoint completed. Path: " + savepointPath);
-                });
+
+
+
+        runClusterAction(activeCommandLine, commandLine,   clusterClient -> {
+            final String savepointPath;
+            try {
+                savepointPath = clusterClient.stopWithSavepoint(jobId, advanceToEndOfEventTime, targetDirectory)
+                        .get(clientTimeout.toMillis(), TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                throw new FlinkException(
+                        "Could not stop with a savepoint job \"" + jobId + "\".", e);
+            }
+            logAndSysout("Savepoint completed. Path: " + savepointPath);
+        });
     }
 
     /**
@@ -965,16 +962,7 @@ public class CliFrontend {
         return jobId;
     }
 
-    /**
-     * Retrieves the {@link ClusterClient} from the given {@link CustomCommandLine} and runs the
-     * given {@link ClusterAction} against it.
-     *
-     * @param activeCommandLine to create the {@link ClusterDescriptor} from
-     * @param commandLine containing the parsed command line options
-     * @param clusterAction the cluster action to run against the retrieved {@link ClusterClient}.
-     * @param <ClusterID> type of the cluster id
-     * @throws FlinkException if something goes wrong
-     */
+
     private <ClusterID> void runClusterAction(
             CustomCommandLine activeCommandLine,
             CommandLine commandLine,
