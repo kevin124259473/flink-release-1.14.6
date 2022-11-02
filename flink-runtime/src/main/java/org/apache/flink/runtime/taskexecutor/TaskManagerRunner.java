@@ -349,6 +349,11 @@ public class TaskManagerRunner implements FatalErrorHandler {
     //  Static entry point
     // --------------------------------------------------------------------------------------------
 
+    /*****
+     * taskManager 执行入口
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         // startup checks and logging
         EnvironmentInformation.logEnvironmentInfo(LOG, "TaskManager", args);
@@ -396,6 +401,9 @@ public class TaskManagerRunner implements FatalErrorHandler {
     }
 
     public static void runTaskManagerProcessSecurely(String[] args) {
+        /****
+         * 获取配置文件信息
+         */
         Configuration configuration = null;
 
         try {
@@ -410,10 +418,18 @@ public class TaskManagerRunner implements FatalErrorHandler {
 
     public static void runTaskManagerProcessSecurely(Configuration configuration) {
         FlinkSecurityManager.setFromConfiguration(configuration);
+        /***
+         * flink插件
+         */
         final PluginManager pluginManager =
                 PluginUtils.createPluginManagerFromRootFolder(configuration);
+        /***
+         * flink System
+         */
         FileSystem.initialize(configuration, pluginManager);
-
+        /***
+         * flink state状态管理
+         */
         StateChangelogStorageLoader.initialize(pluginManager);
 
         int exitCode;
@@ -422,7 +438,9 @@ public class TaskManagerRunner implements FatalErrorHandler {
         ClusterEntrypointUtils.configureUncaughtExceptionHandler(configuration);
         try {
             SecurityUtils.install(new SecurityConfiguration(configuration));
-
+            /***
+             * 执行taskManager程序
+             */
             exitCode =
                     SecurityUtils.getInstalledContext()
                             .runSecured(() -> runTaskManager(configuration, pluginManager));

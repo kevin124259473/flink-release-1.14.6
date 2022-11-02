@@ -91,6 +91,7 @@ public class JobCancellationHandler
                 terminationFuture = gateway.cancelJob(jobId, timeout);
                 break;
             case STOP:
+                //  ./flink run -s 指令已经过期
                 throw new RestHandlerException(
                         "The termination mode \"stop\" has been removed. For "
                                 + "an ungraceful shutdown, please use \"cancel\" instead. For a graceful shutdown, "

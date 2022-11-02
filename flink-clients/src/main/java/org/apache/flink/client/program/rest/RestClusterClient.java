@@ -453,10 +453,12 @@ public class RestClusterClient<T> implements ClusterClient<T> {
         LOG.info("发送 stopWithSavepoint 请求,jobId:{},savepointDirectory:{}",jobId,savepointDirectory);
         final StopWithSavepointTriggerHeaders stopWithSavepointTriggerHeaders = StopWithSavepointTriggerHeaders.getInstance();
 
-        final SavepointTriggerMessageParameters stopWithSavepointTriggerMessageParameters = stopWithSavepointTriggerHeaders.getUnresolvedMessageParameters();
+        final SavepointTriggerMessageParameters stopWithSavepointTriggerMessageParameters
+                = stopWithSavepointTriggerHeaders.getUnresolvedMessageParameters();
         stopWithSavepointTriggerMessageParameters.jobID.resolve(jobId);
 
-        final CompletableFuture<TriggerResponse> responseFuture = sendRequest(stopWithSavepointTriggerHeaders, stopWithSavepointTriggerMessageParameters, new StopWithSavepointRequestBody(savepointDirectory, advanceToEndOfTime));
+        final CompletableFuture<TriggerResponse> responseFuture =
+                sendRequest(stopWithSavepointTriggerHeaders, stopWithSavepointTriggerMessageParameters, new StopWithSavepointRequestBody(savepointDirectory, advanceToEndOfTime));
 
         return responseFuture.thenCompose(savepointTriggerResponseBody -> {
                             final TriggerId savepointTriggerId =
