@@ -379,19 +379,27 @@ public class TaskManagerRunner implements FatalErrorHandler {
     public static int runTaskManager(Configuration configuration, PluginManager pluginManager)
             throws Exception {
         final TaskManagerRunner taskManagerRunner;
-
+        /****
+         * 执行 TaskManagerRunner
+         */
         try {
             taskManagerRunner =
                     new TaskManagerRunner(
                             configuration,
                             pluginManager,
                             TaskManagerRunner::createTaskExecutorService);
+            /****
+             * 程序执行
+             */
             taskManagerRunner.start();
         } catch (Exception exception) {
             throw new FlinkException("Failed to start the TaskManagerRunner.", exception);
         }
 
         try {
+            /****
+             * 异步获取 TaskManagerRunner 执行结果异常code
+             */
             return taskManagerRunner.getTerminationFuture().get().getExitCode();
         } catch (Throwable t) {
             throw new FlinkException(
